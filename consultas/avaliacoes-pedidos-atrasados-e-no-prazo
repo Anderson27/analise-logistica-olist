@@ -1,0 +1,14 @@
+-- Pergunta 2: O atraso na entrega afeta a nota do cliente?
+-- Resultado: Atrasado = 2,27 (6.409 avaliações) | No prazo = 4,29 (89.944 avaliações)
+
+SELECT
+  CASE WHEN o.order_delivered_customer_date::date > o.order_estimated_delivery_date::date
+       THEN 'Atrasado' ELSE 'No prazo' END AS situacao,
+  COUNT(*) AS avaliacoes,
+  ROUND(AVG(r.review_score), 2) AS nota_media
+FROM orders o
+JOIN order_reviews r ON o.order_id = r.order_id
+WHERE o.order_status = 'delivered'
+  AND o.order_delivered_customer_date IS NOT NULL
+GROUP BY situacao;
+
